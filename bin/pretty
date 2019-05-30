@@ -1,0 +1,38 @@
+#!/usr/bin/env node
+
+const mri = require('mri');
+const prettyFormat = require('../index');
+
+const argv = process.argv.slice(2);
+/**
+ * --all -a
+ * --force -f
+ */
+const parsed = mri(argv, {
+  alias: {
+    a: 'all',
+    f: 'force',
+    h: 'help',
+    v: 'version',
+    p: 'path',
+  },
+  boolean: ['semi'],
+});
+
+if (parsed.version) {
+  const pkg = require('../package.json');
+  console.log(pkg.version);
+} else if (parsed.help) {
+  console.log(`
+  Usage
+    $ pretty
+  Options
+    --force -f 强制格式化, 不提示你是否要格式化覆盖文件
+    --all -a 格式化没有被 ESLint 忽略的 js 文件
+    --path -p 格式化指定路径的 js 文件(并且没有被 ignore 掉的)
+    --semi 是否格式化后有分号, 默认是有
+    --version -v 查看版本
+  `);
+} else {
+  prettyFormat(parsed);
+}
